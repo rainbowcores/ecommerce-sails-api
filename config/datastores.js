@@ -51,6 +51,9 @@ module.exports.datastores = {
     adapter: 'sails-mysql',
 
   },
+  test: {
+    adapter: 'sails-mysql',
+  }
 
 
 };
