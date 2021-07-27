@@ -251,7 +251,7 @@ module.exports = {
     *                                                                          *
     ***************************************************************************/
     onlyAllowOrigins: [
-      'https://ecommerce-sails.herokuapp.com/',
+      'https://ecommerce-sails.herokuapp.com',
     ],
 
 
