@@ -243,7 +243,7 @@ module.exports = {
   * > this section from your `config/env/production.js` file.                *
   *                                                                          *
   ***************************************************************************/
-  sockets: {
+  // sockets: {
 
     /***************************************************************************
     *                                                                          *
@@ -254,9 +254,9 @@ module.exports = {
     * > Be sure to use the right protocol!  ("http://" vs. "https://")         *
     *                                                                          *
     ***************************************************************************/
-    onlyAllowOrigins: [
-      'https://ecommerce-sails.herokuapp.com/',
-    ],
+    // onlyAllowOrigins: [
+    //   'https://ecommerce-sails.herokuapp.com/',
+    // ],
 
 
     /***************************************************************************
@@ -283,7 +283,7 @@ module.exports = {
     // ```
     //--------------------------------------------------------------------------
 
-  },
+  // },
 
 
 
