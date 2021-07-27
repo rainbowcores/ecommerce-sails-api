@@ -47,8 +47,8 @@ module.exports = {
     *                                                                          *
     ***************************************************************************/
     default: {
-      adapter: 'sails-mysql',
-      url: process.env.DATABASE_URL,
+      // adapter: 'sails-mysql',
+      // url: 'mysql://user:password@host:port/database',
       //--------------------------------------------------------------------------
       //  /\   To avoid checking it in to version control, you might opt to set
       //  ||   sensitive credentials like `url` using an environment variable.
@@ -73,10 +73,6 @@ module.exports = {
       // ssl: true,
 
     },
-    test: {
-      adapter: 'sails-mysql',
-      url: process.env.TEST_DATABASE_URL,
-    }
 
   },
 
@@ -243,7 +239,7 @@ module.exports = {
   * > this section from your `config/env/production.js` file.                *
   *                                                                          *
   ***************************************************************************/
-  // sockets: {
+  sockets: {
 
     /***************************************************************************
     *                                                                          *
@@ -254,9 +250,9 @@ module.exports = {
     * > Be sure to use the right protocol!  ("http://" vs. "https://")         *
     *                                                                          *
     ***************************************************************************/
-    // onlyAllowOrigins: [
-    //   'https://ecommerce-sails.herokuapp.com/',
-    // ],
+    onlyAllowOrigins: [
+      'https://ecommerce-sails.herokuapp.com/',
+    ],
 
 
     /***************************************************************************
@@ -283,7 +279,7 @@ module.exports = {
     // ```
     //--------------------------------------------------------------------------
 
-  // },
+  },
 
 
 
