@@ -1,22 +1,21 @@
 /**
- * Production environment settings
+ * Staging environment settings
  * (sails.config.*)
  *
- * What you see below is a quick outline of the built-in settings you need
- * to configure your Sails app for production.  The configuration in this file
- * is only used in your production environment, i.e. when you lift your app using:
+ * This is mostly a carbon copy of the production environment settings
+ * in config/env/production.js, but with the overrides listed below.
+ * For more detailed information and links about what these settings do
+ * see the production config file.
  *
- * ```
- * NODE_ENV=production node app
- * ```
+ * > This file takes effect when `sails.config.environment` is "staging".
+ * > But note that NODE_ENV should still be "production" when lifting
+ * > your app in the staging environment.  In other words:
+ * > ```
+ * >     NODE_ENV=production sails_environment=staging node app
+ * > ```
  *
- * > If you're using git as a version control solution for your Sails app,
- * > this file WILL BE COMMITTED to your repository by default, unless you add
- * > it to your .gitignore file.  If your repository will be publicly viewable,
- * > don't add private/sensitive data (like API secrets / db passwords) to this file!
- *
- * For more best practices and tips, see:
- * https://sailsjs.com/docs/concepts/deployment
+ * If you're unsure or want advice, stop by:
+ * https://sailsjs.com/support
  */
 
 module.exports = {
@@ -90,7 +89,7 @@ module.exports = {
     * https://sailsjs.com/docs/concepts/models-and-orm/model-settings#?migrate *
     *                                                                          *
     ***************************************************************************/
-    migrate: 'safe',
+    migrate: 'alter',
 
     /***************************************************************************
     *                                                                          *
