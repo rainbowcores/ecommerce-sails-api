@@ -19,6 +19,10 @@ module.exports = {
       required: true,
       unique: true,
     },
+    cart: {
+      collection:'cart',
+      via: 'userid'
+    },
     password: { type: 'string', required: true, },
     createdAt: { type: 'number', autoCreatedAt: true, columnName: 'created_at', },
     updatedAt: { type: 'number', autoUpdatedAt: true, columnName: 'updated_at', },

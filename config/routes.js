@@ -12,4 +12,7 @@ module.exports.routes = {
     "GET /": "home/index",
     "POST /user/register": "user/register",
     "POST /user/login": "user/login",
+    "POST /cart": 'CartsController.addToCart',
+    "POST /cart/update/:userid": 'CartsController.updateCart',
+    "DELETE /cart/clear/:userid": 'CartsController.clearCart'
 };
