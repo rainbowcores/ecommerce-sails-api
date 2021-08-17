@@ -43,6 +43,11 @@ module.exports = {
       via: 'product',
       through: 'productcart'
     },
+    orders:{
+      collection: 'order',
+      via: 'product',
+      through: 'productorder'
+    },
     createdAt: { type: 'number', autoCreatedAt: true, columnName: 'created_at', },
     updatedAt: { type: 'number', autoUpdatedAt: true, columnName: 'updated_at', },
 

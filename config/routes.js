@@ -14,5 +14,7 @@ module.exports.routes = {
     "POST /user/login": "user/login",
     "POST /cart": 'CartsController.addToCart',
     "POST /cart/update/:userid": 'CartsController.updateCart',
-    "DELETE /cart/clear/:userid": 'CartsController.clearCart'
+    "DELETE /cart/clear/:userid": 'CartsController.clearCart',
+    "POST /order": 'OrdersController.placeOrder',
+    "POST /order/complete/:orderid": 'OrdersController.completeOrder'
 };

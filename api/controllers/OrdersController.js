@@ -1,16 +1,15 @@
 /**
- * CartsController
+ * OrdersController
  *
  * @description :: Server-side actions for handling incoming requests.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 
-
 module.exports = {
-    addToCart: async function (req, res) {
+    placeOrder: async function (req, res) {
         try {
             //Verify user exists
-            const user = await User.findOne({
+            var user = await User.findOne({
                 id: req.body.userid
             });
             if (!user) {
@@ -22,11 +21,12 @@ module.exports = {
             }
 
             //Find or create new cart for user
-            var newOrExistingCart = await Cart.findOrCreate({ userid: req.body.userid }, { userid: req.body.userid });
+            var newOrder = await Order.create({ userid: req.body.userid, status: req.body.status}).fetch();
 
             // Check if products exist
             // Add products- cart association
             req.body.products.forEach(async function (factor, index) {
+                newOrder=this.newOrder;
                 try {
                     var product = await Product.findOne(factor.productid);
                     if (!product) {
@@ -48,16 +48,14 @@ module.exports = {
                             message: 'Minimum Product Quantity Allowed In Cart Is 1'
                         });
                     }
-                    var newOrExistingProductcart = await Productcart.findOrCreate({ product: factor.productid, cart: newOrExistingCart.cart },
-                        { product: factor.productid, cart: newOrExistingCart.id, quantity: factor.quantity });
-                    newOrExistingProductcart = await Productcart.updateOne({ id: newOrExistingProductcart.id }).set(
-                        { product: factor.productid, cart: newOrExistingCart.id, quantity: factor.quantity });
+                    await ProductOrder.create(
+                        { product: factor.productid, order: newOrder.id, quantity: factor.quantity });
                     if (req.body.products.length == index + 1) {
-                        var cart = await Productcart.find({ cart: newOrExistingCart.id }).populate('product');
-                        var userCartItems = {'user': user, 'cart': newOrExistingCart, "products": cart};
+                        var order = await ProductOrder.find({ order: newOrder.id}).populate('product');
+                        var userOrderItems = {'user': user, 'order': newOrder, "products": order};
                         return res.json({
-                            message: 'Products Added to Cart Successfully',
-                            data: userCartItems
+                            message: 'Order Created Successfully',
+                            data: userOrderItems
                         });
                     }
 
@@ -67,7 +65,7 @@ module.exports = {
                     });
                 }
 
-            });
+            },{newOrder: newOrder});
 
         }
         catch (error) {
@@ -77,11 +75,20 @@ module.exports = {
         }
 
     },
-    updateCart: async function (req, res) {
-        var cart;
+    completeOrder: async function (req, res) {
         try {
-            //Verify user exists
-            const user = await User.findOne({
+            //Verify order exists
+            var order = await Order.findOne({
+                id: req.param('orderid')
+            });
+            if (!order) {
+                res.status(404);
+                res.json({
+                    message: 'Order Not Found'
+                });
+                return res;
+            }
+            var user = await User.findOne({
                 id: req.param('userid')
             });
             
@@ -92,20 +99,13 @@ module.exports = {
                 });
                 return res;
             }
-
-            //Find  cart for user
-            cart = await Cart.findOne({ userid: user.id });
-            
-            //remove existing product - cart association 
-            await Productcart.destroy({ cart: cart.id });
-
             // Check if products exist
             // Add products- cart association
             req.body.products.forEach(async function (factor, index) {
-                cart=this.cart;
+                order=this.order;
+                user=this.user;
                 try {
-                    var product = await Product.findOne(factor.productid);
-                    
+                    var product = await Product.findOne({id:factor.productid});
                     if (!product) {
                         res.status(404);
                         res.json({
@@ -125,17 +125,22 @@ module.exports = {
                             message: 'Minimum Product Quantity Allowed In Cart Is 1'
                         });
                     }
-                    await Productcart.create({ product: factor.productid, cart: cart.id, quantity: factor.quantity }).fetch();
+                    var newProductQuantity = product.quantity - factor.quantity;
+                    var product = await Product.update({id:factor.productid})
+                    .set({
+                        quantity:newProductQuantity
+                    });
                     
                     if (req.body.products.length == index + 1) {
-                        // var cart = await Cart.find({ id: newOrExistingCart.id }).populate('productcartid').populate('userid');
-                        var userCart = await Productcart.find({ cart: cart.id }).populate('product');
-                        var userCartItems = {'user': user, 'cart': cart, "products": userCart};
+                        order.status = req.body.status;
+                        var productOrder = await ProductOrder.find({ order: order.id}).populate('product');
+                        var userOrderItems = {'user': user, 'order': order, "products": productOrder};
                         return res.json({
-                            message: 'Cart Modified Successfully',
-                            data: userCartItems
+                            message: 'Order Completed Successfully',
+                            data: userOrderItems
                         });
                     }
+
 
                 } catch (error) {
                     return res.json({
@@ -143,7 +148,8 @@ module.exports = {
                     });
                 }
 
-            },{cart: cart});
+            },{order: order, user:user});
+
 
         }
         catch (error) {
@@ -153,49 +159,5 @@ module.exports = {
         }
 
     },
-    clearCart: async function (req, res) {
-        try {
-            var userid=req.param('userid');
-
-            const user = await User.findOne({
-                id: userid
-            });
-            if (!user) {
-                res.status(404);
-                res.json({
-                    message: 'User Not Found'
-                });
-                return res;
-            }
-            const cart = await Cart.findOne({
-                userid: userid
-            });
-
-            if (!cart) {
-                res.json({
-                    message: 'User Has Not Added Items to Cart Yet'
-                });
-                return res;
-            }
-
-            var del = await Productcart.destroy({ cart: cart.id }).fetch();
-            
-            var userCart = await Productcart.find({ cart: cart.id }).populate('product');
-
-            var userCartItems = {'user': user, 'cart': cart, "products": userCart};
-            return res.json({
-                message: 'Cart Cleared Successfully',
-                data: userCartItems
-            });
-            
-        } catch (error) {
-            return res.json({
-                message: error.message
-            });
-        }
-
-    }
-
-
 };
 
